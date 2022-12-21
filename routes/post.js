@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser')
 const { Op } = require("sequelize");
 const { Post } = require("../models");
 const { User } = require("../models");
+const { Comment } = require("../models");
 const authMiddleware  = require("../middleware/auth-middleware")
 
 const app = express();
@@ -53,9 +54,21 @@ router.get("/posts/:post_id", async (req,res) => {
       include: [
         { model : User,
           attributes: ['nickname']
+        },
+        { model : Comment,
+          attributes : ['comment', 'createdAt'],
+          include : [
+            {
+              model : User,
+              attributes : ['nickname']
+            }
+          ]
         }
       ]
-    }) // user nickname, comment post_id 
+    });
+    if (!post){
+      return res.status(400).json({errorMessage:"게시글 조회에 실패하였습니다."})
+    }
 
     res.json({ post })
   }
