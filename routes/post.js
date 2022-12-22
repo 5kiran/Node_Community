@@ -17,10 +17,10 @@ router.post("/posts", authMiddleware, async (req,res) =>{
   try {
     writer_id = res.locals.user
     const { title, content } = req.body;
-    if (title === undefined) {
+    if (!title) {
       return res.status(412).json({errorMessage:"제목 형식이 올바르지 않습니다."})
     }
-    if (content === undefined) {
+    if (!content) {
       return res.status(412).json({errorMessage:"내용 형식이 올바르지 않습니다."})
     }
 
