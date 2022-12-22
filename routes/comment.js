@@ -36,11 +36,11 @@ router.get("/comments/:post_id", async (req,res) => {
 
   comments = await Comment.findAll({
     where : { post_id : post_id },
-    row : true,
-    // attributes : ['comment','User.nickname'],
+    raw : true,
+    attributes : ['post_id','comment','User.nickname'],
     include : [
       { model : User,
-        attributes: ['nickname']
+        attributes: []
       }
     ]
   })

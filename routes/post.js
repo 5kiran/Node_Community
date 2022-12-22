@@ -36,7 +36,26 @@ router.post("/posts", authMiddleware, async (req,res) =>{
 router.get("/posts", async (req,res) => {
   
   try {
-    const posts = await Post.findAll({});
+    const posts = await Post.findAll({
+      raw : true,
+      attributes : [
+        'id',
+        'title',
+        'writer_id',
+        'User.nickname',
+        'content',
+        'createdAt',
+        'updatedAt',
+        'like'
+      ],
+      include : [
+        {
+          model : User,
+          attributes : [],
+        }
+      ],
+      // order: [[Post, 'createdAt', 'desc']]
+    });
     res.json({posts});
   }
   catch {
@@ -50,6 +69,8 @@ router.get("/posts/:post_id", async (req,res) => {
     const { post_id: id } = req.params;
     const post = await Post.findOne({
       where: { id },
+      // raw : true,
+      attributes : ['id','title','User.nickname','content','createdAt','like'],
       include: [
         { 
           model : User,
@@ -67,16 +88,11 @@ router.get("/posts/:post_id", async (req,res) => {
         }
       ]
     });
-    const likeCountDao = await Like.findAll({
-      where : {post_id: id},
-      attributes : ['post_id']
-    })
-    const likecnt = likeCountDao.length
     if (!post){
       return res.status(400).json({errorMessage:"게시글 조회에 실패하였습니다."})
     }
 
-    res.json({ post,'likecnt':likecnt })
+    res.json({post})
   }
   catch (err) {
     console.log("에러메세지 :",err)

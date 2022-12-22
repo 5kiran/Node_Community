@@ -27,10 +27,12 @@ router.put("/posts/:post_id/like", authMiddleware, async (req,res) => {
       where : {post_id:post_id, user_id: user_id}
     })
     if (!existsLike) {
+      await Post.increment({like : 1},{where :{id:post_id}})
       await Like.create({post_id:post_id,user_id:user_id})
       return res.json({"message":"좋아요 등록 완료"})
     }
-  
+    
+    await Post.increment({like : -1},{where :{id:post_id}})
     existsLike.destroy();
     res.json({"message":"좋아요 취소 완료"})    
   }
@@ -44,18 +46,29 @@ router.get("/likes/posts", authMiddleware, async (req,res) => {
   const user_id = res.locals.user;
   const existsLikePost = await Like.findAll({
     where : {user_id:user_id},
+    raw : true,
+    attributes : [
+      'post_id',
+      'user_id',
+      'Post.title',
+      'Post.content',
+      'Post.createdAt',
+      'Post.User.nickname',
+      'Post.like'
+    ],
     include : [
       {
         model: Post,
-        attributes: ['title','content','createdAt'],
+        attributes: [],
         include : [
           {
             model : User,
-            attributes : ['nickname']
+            attributes : []
           }
         ]
       }
-    ]
+    ],
+    order: [[Post, 'like', 'desc']]
   });
 
 
