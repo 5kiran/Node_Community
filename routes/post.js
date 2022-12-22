@@ -85,10 +85,10 @@ router.put("/posts/:post_id", authMiddleware,async (req,res) => {
     const {post_id: id} = req.params;
     const {title, content} = req.body;
 
-    if (title === undefined) {
+    if (!title) {
       return res.status(412).json({errorMessage:"제목 형식이 올바르지 않습니다."})
     }
-    if (content === undefined) {
+    if (!content) {
       return res.status(412).json({errorMessage:"내용 형식이 올바르지 않습니다."})
     }
   
@@ -123,7 +123,7 @@ router.delete("/posts/:post_id", authMiddleware, async (req,res) => {
       return res.status(401).json({errorMessage:"게시글 작성자가 아닙니다"})
     }
     
-    await findPost.destroy();
+    await result.destroy();
     res.json({"Message":"게시글 삭제 완료"})
   }
   catch {
