@@ -1,7 +1,7 @@
 const express = require("express");
 
 const cookieParser = require('cookie-parser')
-const { Like, Post } = require("../models");
+const { Like, Post ,User } = require("../models");
 const authMiddleware  = require("../middleware/auth-middleware")
 
 const app = express();
@@ -9,6 +9,8 @@ const router = express.Router();
 
 app.use(cookieParser());
 
+
+// 게시글 좋아요 API
 router.put("/posts/:post_id/like", authMiddleware, async (req,res) => {
   try {
     const {post_id} = req.params;
@@ -17,7 +19,7 @@ router.put("/posts/:post_id/like", authMiddleware, async (req,res) => {
     const existsPost = await Post.findOne({
       where : {id:post_id}
     })
-    
+
     if (!existsPost) {
       return res.status(404).json({errorMessage:"게시글이 존재하지 않습니다."})
     }
@@ -35,7 +37,31 @@ router.put("/posts/:post_id/like", authMiddleware, async (req,res) => {
   catch {
     res.status(400).json({"message":"게시글 좋아요에 실패하였습니다."})
   }
-  
 })
 
+// 좋아요 게시글 조회
+router.get("/likes/posts", authMiddleware, async (req,res) => {
+  const user_id = res.locals.user;
+  const existsLikePost = await Like.findAll({
+    where : {user_id:user_id},
+    include : [
+      {
+        model: Post,
+        attributes: ['title','content','createdAt'],
+        include : [
+          {
+            model : User,
+            attributes : ['nickname']
+          }
+        ]
+      }
+    ]
+  });
+
+
+
+
+  console.log(existsLikePost)
+  res.send(existsLikePost)
+})
 module.exports = router;
