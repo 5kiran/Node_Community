@@ -3,9 +3,8 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require('cookie-parser')
 
 const { Op } = require("sequelize");
-const { Post } = require("../models");
-const { User } = require("../models");
-const { Comment } = require("../models");
+const { Post, sequelize } = require("../models");
+const { User ,Like, Comment } = require("../models");
 const authMiddleware  = require("../middleware/auth-middleware")
 
 const app = express();
@@ -52,10 +51,12 @@ router.get("/posts/:post_id", async (req,res) => {
     const post = await Post.findOne({
       where: { id },
       include: [
-        { model : User,
+        { 
+          model : User,
           attributes: ['nickname']
         },
-        { model : Comment,
+        { 
+          model : Comment,
           attributes : ['comment', 'createdAt'],
           include : [
             {
@@ -66,14 +67,19 @@ router.get("/posts/:post_id", async (req,res) => {
         }
       ]
     });
+    const likeCountDao = await Like.findAll({
+      where : {post_id: id},
+      attributes : ['post_id']
+    })
+    const likecnt = likeCountDao.length
     if (!post){
       return res.status(400).json({errorMessage:"게시글 조회에 실패하였습니다."})
     }
 
-    res.json({ post })
+    res.json({ post,'likecnt':likecnt })
   }
   catch (err) {
-    console.log(err)
+    console.log("에러메세지 :",err)
     res.status(400).json({ errorMessage: "게시글 조회에 실패하였습니다." })
   }
 })
