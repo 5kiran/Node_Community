@@ -70,7 +70,7 @@ router.post("/auth", async (req,res) => {
     res.cookie("token", token)
     res.json({"token":token})
   }
-  catch {
+  catch(err) {
     res.status(400).json({errorMessage:"로그인에 실패하였습니다."})
   }
 })
