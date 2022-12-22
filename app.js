@@ -6,12 +6,13 @@ const authMiddleware  = require("./middleware/auth-middleware")
 const usersRouter = require("./routes/user")
 const postsRouter = require("./routes/post")
 const commentsRouter = require("./routes/comment")
+const likesRouter = require("./routes/like")
 
 const app = express();
 
 
 app.use(express.json());
-app.use("/api", express.urlencoded({extended: false}), [usersRouter,postsRouter,commentsRouter])
+app.use("/api", express.urlencoded({extended: false}), [usersRouter,postsRouter,commentsRouter,likesRouter])
 
 
 
