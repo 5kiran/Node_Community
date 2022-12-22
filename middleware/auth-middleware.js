@@ -8,6 +8,8 @@ module.exports = (req, res, next) => {
   const [authType, authToken] = (cookie || "").split("=");
   //authType : Bearer
   //authToken : 실제 jwt 값
+  // bearer kfjaskfjkasjfkas.fksajfkasjfkasjkfa.fsakjfkasjfk
+  // token=gldskgl;kdsl;gksl;d.gldskkgldskgl;ksdl;.gklsdgklsjdgksd
 
   if (!authToken || authType !== "token") {
     res.status(401).send({
