@@ -1,18 +1,22 @@
 const express = require("express");
-const {Op} = require("sequelize");
-const jwt = require("jsonwebtoken");
-const {User} = require("./models");
-const authMiddleware  = require("./middleware/auth-middleware")
+
 const usersRouter = require("./routes/user")
 const postsRouter = require("./routes/post")
 const commentsRouter = require("./routes/comment")
-const likesRouter = require("./routes/like")
+const likesRouter = require("./routes/like");
+
+const swaggerUi = require("swagger-ui-express");
+const swaggerFile = require("./swagger/swagger-output.json");
+
 
 const app = express();
+const router = express.Router();
 
 
 app.use(express.json());
-app.use("/api", express.urlencoded({extended: false}), [usersRouter,postsRouter,commentsRouter,likesRouter])
+app.use("/api", express.urlencoded({extended: false}), [router,usersRouter,postsRouter,commentsRouter,likesRouter]);
+
+app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 
 

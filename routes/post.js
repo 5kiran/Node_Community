@@ -1,14 +1,12 @@
 const express = require("express");
-const jwt = require("jsonwebtoken");
 const cookieParser = require('cookie-parser')
 
-const { Op } = require("sequelize");
-const { Post, sequelize } = require("../models");
-const { User ,Like, Comment } = require("../models");
+const { Post, User , Comment } = require("../models");
 const authMiddleware  = require("../middleware/auth-middleware")
 
 const app = express();
 const router = express.Router();
+
 app.use(cookieParser());
 
 // 게시글 작성

@@ -1,15 +1,12 @@
 const express = require("express");
-
 const cookieParser = require('cookie-parser')
 
-const { Op, where } = require("sequelize");
-const { Post } = require("../models");
-const { User } = require("../models");
-const { Comment } = require("../models");
+const { User, Comment} = require("../models");
 const authMiddleware  = require("../middleware/auth-middleware")
 
 const app = express();
 const router = express.Router();
+
 app.use(cookieParser());
 
 // 댓글 작성 API

@@ -4,8 +4,6 @@ const cookieParser = require('cookie-parser')
 
 const { Op } = require("sequelize");
 const { User } = require("../models");
-const authMiddleware  = require("../middleware/auth-middleware")
-
 const app = express();
 const router = express.Router();
 
@@ -40,7 +38,7 @@ router.post("/register", async (req,res) => {
     })
 
     if (existsUsers.length) {
-      return res.status(412).json({ errorMessage: "이메일이나 닉네임이 중복 되었습니다." });
+      return res.status(412).json({ errorMessage: "이메일 또는 닉네임이 중복 되었습니다." });
     }
     await User.create({ email, nickname, password })
     res.status(201).json({'message': '회원 가입에 성공하였습니다.'})
@@ -57,6 +55,7 @@ router.post("/auth", async (req,res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ where: { email, password } });
+    console.log(user)
 
     if (!user) {
       return res.status(400).json({ errorMessage: "이메을 또는 패스워드를 확인해주세요" })

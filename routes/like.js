@@ -43,38 +43,40 @@ router.put("/posts/:post_id/like", authMiddleware, async (req,res) => {
 
 // 좋아요 게시글 조회
 router.get("/likes/posts", authMiddleware, async (req,res) => {
-  const user_id = res.locals.user;
-  const existsLikePost = await Like.findAll({
-    where : {user_id:user_id},
-    raw : true,
-    attributes : [
-      'post_id',
-      'user_id',
-      'Post.title',
-      'Post.content',
-      'Post.createdAt',
-      'Post.User.nickname',
-      'Post.like'
-    ],
-    include : [
-      {
-        model: Post,
-        attributes: [],
-        include : [
-          {
-            model : User,
-            attributes : []
-          }
-        ]
-      }
-    ],
-    order: [[Post, 'like', 'desc']]
-  });
-
-
-
-
-  console.log(existsLikePost)
-  res.send(existsLikePost)
+  try {
+    const user_id = res.locals.user;
+    const existsLikePost = await Like.findAll({
+      where : {user_id:user_id},
+      raw : true,
+      attributes : [
+        'post_id',
+        'user_id',
+        'Post.title',
+        'Post.content',
+        'Post.createdAt',
+        'Post.User.nickname',
+        'Post.like'
+      ],
+      include : [
+        {
+          model: Post,
+          attributes: [],
+          include : [
+            {
+              model : User,
+              attributes : []
+            }
+          ]
+        }
+      ],
+      order: [[Post, 'like', 'desc']]
+    });
+  
+    res.json({existsLikePost})
+  }
+  catch {
+    res.status(400).json({errorMessage: "좋아요 게시글 조회에 실패하였습니다."})
+  }
+  
 })
 module.exports = router;
