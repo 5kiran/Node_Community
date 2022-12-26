@@ -32,11 +32,13 @@
 .
 ├── app.js
 ├── routes
-│   ├── index.js
-│   ├── comments.js
-│   └── posts.js
+│   ├── user.js
+│   ├── post.js
+│   ├── comment.js
+│   └── like.js
 └── schemas
-    ├── index.js
-    ├── comment.js
-    └── post.js
+    ├── user.js
+    ├── post.js
+    ├── comment.js
+    └── like.js
 ```
